@@ -1,5 +1,6 @@
 package com.google.mediapipe.examples.holidaykeeper;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -20,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-
 public class CalendarActivity extends AppCompatActivity {
 
     private TableLayout tableLayout;
@@ -31,6 +31,8 @@ public class CalendarActivity extends AppCompatActivity {
     private SimpleDateFormat comparisonDateFormat;
 
     private String selectedDate = "";
+    private int currentYear;
+    private int currentMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +51,13 @@ public class CalendarActivity extends AppCompatActivity {
         Button btnEditEvent = findViewById(R.id.btnEditEvent);
         Button btnDelEvent = findViewById(R.id.btnDelEvent);
         Button btnBackFromCalendar = findViewById(R.id.btnBackFromCalendar);
+        Button btnSelectDate = findViewById(R.id.btnSelectDate);
         tableLayout = findViewById(R.id.tableLayout);
         tvMonth = findViewById(R.id.textView10);
         tvYear = findViewById(R.id.textView11);
 
         btnEditEvent.setOnClickListener(v -> {
             if (!selectedDate.isEmpty()) {
-
                 Intent intent = new Intent(CalendarActivity.this, EditEventActivity.class);
                 intent.putExtra("SELECTED_DATE", selectedDate);
                 startActivity(intent);
@@ -75,6 +77,50 @@ public class CalendarActivity extends AppCompatActivity {
         btnBackFromCalendar.setOnClickListener(v -> {
             Navigator.navigate(CalendarActivity.this, MainActivity.class, false);
         });
+
+        btnSelectDate.setOnClickListener(v -> {
+            showDatePicker();
+        });
+    }
+
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+
+                    currentYear = selectedYear;
+                    currentMonth = selectedMonth;
+
+                    updateMonthYearDisplay();
+
+                    setupCalendarForSelectedMonth();
+
+                    selectedDate = "";
+                    hideActionButtons();
+
+                    Toast.makeText(CalendarActivity.this,
+                            "Показан " + getMonthName(selectedMonth) + " " + selectedYear,
+                            Toast.LENGTH_SHORT).show();
+                },
+                year, month, day);
+
+        datePickerDialog.show();
+    }
+
+    private void updateMonthYearDisplay() {
+        tvMonth.setText(getMonthName(currentMonth));
+        tvYear.setText(String.valueOf(currentYear));
+    }
+
+    private String getMonthName(int month) {
+        String[] monthNames = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
+        return monthNames[month];
     }
 
     private void deleteEventsForSelectedDate() {
@@ -83,11 +129,9 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         try {
-
             DatabaseHelper.EventData eventData = dbHelper.getEventByDate(selectedDate);
 
             if (eventData != null) {
-
                 boolean deleted = dbHelper.deleteEventAndIdeas(eventData.id);
 
                 if (deleted) {
@@ -95,10 +139,9 @@ public class CalendarActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
 
                     loadEventDates();
-                    setupCalendar();
+                    setupCalendarForSelectedMonth();
 
                     hideActionButtons();
-
                     selectedDate = "";
                 } else {
                     Toast.makeText(this, "Ошибка при удалении", Toast.LENGTH_SHORT).show();
@@ -147,9 +190,16 @@ public class CalendarActivity extends AppCompatActivity {
 
     private void setupCalendar() {
         Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH);
-        int today = calendar.get(Calendar.DAY_OF_MONTH);
+        currentYear = calendar.get(Calendar.YEAR);
+        currentMonth = calendar.get(Calendar.MONTH);
+
+        setupCalendarForSelectedMonth();
+    }
+
+    private void setupCalendarForSelectedMonth() {
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int currentTodayMonth = Calendar.getInstance().get(Calendar.MONTH);
+        int currentTodayYear = Calendar.getInstance().get(Calendar.YEAR);
 
         Calendar monthCalendar = Calendar.getInstance();
         monthCalendar.set(Calendar.YEAR, currentYear);
@@ -158,9 +208,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         int daysInMonth = monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        String[] monthNames = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-                "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-        tvMonth.setText(monthNames[currentMonth]);
+        tvMonth.setText(getMonthName(currentMonth));
         tvYear.setText(String.valueOf(currentYear));
 
         int firstDayOfWeek = monthCalendar.get(Calendar.DAY_OF_WEEK);
@@ -201,12 +249,9 @@ public class CalendarActivity extends AppCompatActivity {
                 dayButton.setTextSize(14);
 
                 if (isDarkTheme) {
-
                     dayButton.setTextColor(getResources().getColor(android.R.color.white));
-
                     dayButton.setBackgroundTintList(null);
                 } else {
-
                     dayButton.setTextColor(getResources().getColor(android.R.color.black));
                 }
 
@@ -278,10 +323,6 @@ public class CalendarActivity extends AppCompatActivity {
         btnEditEvent.setVisibility(Button.VISIBLE);
         btnDelEvent.setVisibility(Button.VISIBLE);
 
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH);
-
         selectedDate = String.format(Locale.getDefault(), "%02d.%02d.%04d",
                 day, currentMonth + 1, currentYear);
 
@@ -297,6 +338,13 @@ public class CalendarActivity extends AppCompatActivity {
                 Toast.makeText(this, "События на эту дату: " + events.size(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadEventDates();
+        setupCalendarForSelectedMonth();
     }
 
     @Override

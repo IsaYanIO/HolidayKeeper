@@ -9,11 +9,12 @@
 
     <LinearLayout
         android:id="@+id/linearLayout4"
-        android:layout_width="409dp"
+        android:layout_width="0dp"
         android:layout_height="44dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="1dp">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/btnBackFromCalendar"
@@ -21,16 +22,24 @@
             android:layout_height="45dp"
             android:text="Назад"
             android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnSelectDate"
+            android:layout_width="117dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="8dp"
+            android:text="Выбрать дату"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="43dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
         <TextView
             android:id="@+id/textView8"
@@ -43,6 +52,7 @@
             android:id="@+id/textView10"
             android:layout_width="84dp"
             android:layout_height="30dp"
+            android:layout_marginStart="8dp"
             android:text="TextView"
             android:textSize="20sp" />
 
@@ -50,6 +60,7 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="Год:"
             android:textSize="24sp" />
 
@@ -57,21 +68,23 @@
             android:id="@+id/textView11"
             android:layout_width="84dp"
             android:layout_height="30dp"
+            android:layout_marginStart="8dp"
             android:text="TextView"
             android:textSize="20sp" />
     </LinearLayout>
 
     <TableLayout
         android:id="@+id/tableLayout"
-        android:layout_width="411dp"
-        android:layout_height="579dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="2dp"
         android:padding="4dp"
         android:shrinkColumns="*"
         android:stretchColumns="*"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        tools:layout_editor_absoluteX="-1dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <TableRow
             android:layout_width="match_parent"
@@ -147,25 +160,28 @@
 
     <LinearLayout
         android:id="@+id/linearLayout5"
-        android:layout_width="408dp"
+        android:layout_width="0dp"
         android:layout_height="66dp"
         android:layout_marginBottom="1dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="2dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/btnEditEvent"
-            android:layout_width="198dp"
+            android:layout_width="0dp"
             android:layout_height="64dp"
+            android:layout_weight="1"
             android:text="Редактировать"
             android:textSize="19sp"
             android:visibility="invisible" />
 
         <Button
             android:id="@+id/btnDelEvent"
-            android:layout_width="210dp"
+            android:layout_width="0dp"
             android:layout_height="64dp"
+            android:layout_weight="1"
             android:text="Удалить"
             android:textSize="19sp"
             android:visibility="invisible" />

@@ -61,7 +61,7 @@ public class EditEventActivity extends AppCompatActivity {
         scrollViewIdeas = findViewById(R.id.scrollViewIdeas);
 
         btnBackFromEdit.setOnClickListener(v -> {
-            Navigator.navigate(EditEventActivity.this, MainActivity.class, false);
+            Navigator.navigate(EditEventActivity.this, CalendarActivity.class, false);
         });
 
         btnBackFromEdit2.setOnClickListener(v -> {
